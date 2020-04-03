@@ -15,17 +15,23 @@ def main(args=None):
     logging.basicConfig(filename=_filename,datefmt='%Y-%m-%d %H:%M:%S',format='%(asctime)s;%(message)s',level=logging.DEBUG)
 
     try:
+        # GPIO17, GPIO27
+        # Pin 11, Pin 13
+        pins = [17, 27]
         while True:
-            humidity, temperature = Adafruit_DHT.read_retry(11, 4)
-            if humidity is not None and temperature is not None:
-                print('T:{0:0.1f};H:{1:0.1f}%'.format(temperature, humidity).replace('.',','))
-                log.info('{0:0,.1f};{1:0,.1f}'.format(temperature, humidity).replace('.',','))
-            else:
-                print('T:{0:0.1f};H:{1:0.1f}'.format(0, 0).replace('.',','))
-                log.info('{0:0.1f};{1:0.1f}'.format(0, 0).replace('.',','))
-            time.sleep(15)
+            for pin in pins:
+                humidity, temperature = Adafruit_DHT.read_retry(11, pin)
+                if humidity is not None and temperature is not None:
+                    print(format(temperature, '.1f'))
+                    print(format(humidity, '.1f'))
+                    #log.info('{0:0,.1f};{1:0,.1f}'.format(temperature, humidity).replace('.',','))
+                else:
+                    print('Read error on pin number ' + pin)
+                    #log.info('{0:0.1f};{1:0.1f}'.format(0, 0).replace('.',','))
+            time.sleep(10)
     except (KeyboardInterrupt):
-        log.info('{0:0.1f};{1:0.1f}'.format(0, 0).replace('.',','))
+        print('T:{0:0.1f};H:{1:0.1f}'.format(0, 0).replace('.',','))
+        #log.info('{0:0.1f};{1:0.1f}'.format(0, 0).replace('.',','))
     finally:
         sys.exit()
 
